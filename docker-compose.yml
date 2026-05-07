@@ -1,4 +1,16 @@
 services:
+
+  database:
+    image: mysql:8.0
+    container_name: donaton-db
+    environment:
+      - MYSQL_DATABASE=db_donaton
+      - MYSQL_ROOT_PASSWORD=root 
+    networks:
+      - api-conection
+    ports:
+      - "3307:3306"
+
   api-gateway:
     build: 
       context: .
