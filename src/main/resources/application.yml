@@ -7,30 +7,35 @@ spring:
 
   cloud:
     gateway:
-      server:
-        webmvc:
-          use-framework-retry-filter: true
-          routes:
-            - id: logistica-api
-              uri: ${LOGISTICA_API_URI:http://logistica-service:3001}
-              predicates:
-                - Path=/api/logistica/**
-              filters:
-                - StripPrefix=2
-                - Retry=2
+      routes:
 
-            - id: donaciones-api
-              uri: ${DONACIONES_API_URI:http://donaciones-service:3002}
-              predicates:
-                - Path=/api/donaciones/**
-              filters:
-                - StripPrefix=2
-                - Retry=2
+        - id: logistica-api
+          uri: http://logistica-service:3001
+          predicates:
+            - Path=/logistica/**
+          filters:
+            - StripPrefix=1
 
-            - id: necesidades-api
-              uri: ${NECESIDADES_API_URI:http://necesidades-service:3003}
-              predicates:
-                - Path=/api/necesidades/**
-              filters:
-                - StripPrefix=2
-                - Retry=2
+        - id: donaciones-api
+          uri: http://donaciones-service:3002
+          predicates:
+            - Path=/donaciones/**
+          filters:
+            - StripPrefix=1
+
+        - id: necesidades-api
+          uri: http://necesidades-service:3003
+          predicates:
+            - Path=/necesidades/**
+          filters:
+            - StripPrefix=1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    gateway:
+      enabled: true

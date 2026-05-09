@@ -1,27 +1,27 @@
-#syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1
 
-FROM eclipse-temurin:25-jdk AS builder
+FROM eclipse-temurin:21-jdk AS builder
 
 WORKDIR /app
 
-COPY mvnw mvnw
+COPY mvnw ./
 COPY .mvn .mvn
-
 COPY pom.xml ./
 
 RUN chmod +x mvnw
 
-COPY src src
-RUN ./mvnw -DskipTests package
+RUN ./mvnw dependency:go-offline -B
 
-FROM eclipse-temurin:25-jre
+COPY src src
+
+RUN ./mvnw clean package -DskipTests
+
+FROM eclipse-temurin:21-jre
+
 WORKDIR /app
 
-RUN groupadd --system app && useradd --system --gid app --create-home --home-dir /home/app app
-
-COPY --from=builder --chown=app:app /app/target/*.jar app.jar
-
-USER app
+COPY --from=builder /app/target/*.jar app.jar
 
 EXPOSE 8080
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
