@@ -1,19 +1,16 @@
 services:
-
   database:
     image: mysql:8.0
     container_name: database
-
     environment:
       MYSQL_DATABASE: db_donaton
       MYSQL_ROOT_PASSWORD: root
-
     ports:
       - "3307:3306"
-
+    volumes:
+      - donaton_db_data:/var/lib/mysql # Persistencia de datos activa
     networks:
       - api-conection
-
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
       interval: 10s
@@ -23,73 +20,75 @@ services:
   logistica-service:
     build:
       context: ../api-Padre-Logistica-Donaton
-
     container_name: logistica-service
-
     ports:
       - "3001:3001"
-
+    environment:
+      # Configuración para que el microservicio encuentre la DB en Docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/db_donaton?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
     depends_on:
       database:
         condition: service_healthy
-
     networks:
       - api-conection
 
   donacion-service:
     build:
       context: ../api-hija-donacion-Donaton
-
     container_name: donacion-service
-
     ports:
       - "3002:3002"
-
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/db_donaton?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
     depends_on:
       database:
         condition: service_healthy
-
     networks:
       - api-conection
 
   necesidades-service:
     build:
       context: ../api-hija-necesidad-Donaton
-
     container_name: necesidades-service
-
     ports:
       - "3003:3003"
-
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/db_donaton?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
     depends_on:
       database:
         condition: service_healthy
-
     networks:
       - api-conection
 
   api-gateway:
     build:
       context: .
-
     container_name: donaton-api-gateway
-
     ports:
       - "8080:8080"
-
     depends_on:
-      - logistica-service
-      - donacion-service
-      - necesidades-service
-
+      logistica-service:
+        condition: service_started
+      donacion-service:
+        condition: service_started
+      necesidades-service:
+        condition: service_started
     environment:
       LOGISTICA_API_URI: http://logistica-service:3001
       DONACIONES_API_URI: http://donacion-service:3002
       NECESIDADES_API_URI: http://necesidades-service:3003
-
     networks:
       - api-conection
 
 networks:
   api-conection:
     driver: bridge
+
+volumes:
+  donaton_db_data: 

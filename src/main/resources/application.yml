@@ -4,8 +4,19 @@ spring:
 
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
       routes:
-
         - id: logistica-service
           uri: http://logistica-service:3001
           predicates:
@@ -26,7 +37,6 @@ spring:
             - Path=/necesidades/**
           filters:
             - StripPrefix=1
-
 management:
   endpoints:
     web:
