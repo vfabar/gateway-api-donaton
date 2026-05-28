@@ -8,6 +8,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - donaton_db_data:/var/lib/mysql # Persistencia de datos activa
     networks:
       - api-conection
