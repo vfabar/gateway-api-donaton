@@ -16,27 +16,36 @@ spring:
               - DELETE
               - OPTIONS
             allowedHeaders: "*"
+
       routes:
         - id: logistica-service
-          uri: http://logistica-service:3001
+          uri: ${LOGISTICA_API_URI}
           predicates:
             - Path=/logistica/**
           filters:
             - StripPrefix=1
 
         - id: donacion-service
-          uri: http://donacion-service:3002
+          uri: ${DONACIONES_API_URI}
           predicates:
             - Path=/donacion/**
           filters:
             - StripPrefix=1
 
         - id: necesidades-service
-          uri: http://necesidades-service:3003
+          uri: ${NECESIDADES_API_URI}
           predicates:
             - Path=/necesidades/**
           filters:
             - StripPrefix=1
+
+        - id: need-node-service
+          uri: ${NEED_NODE_API_URI}
+          predicates:
+            - Path=/need-node/**
+          filters:
+            - StripPrefix=1
+
 management:
   endpoints:
     web:

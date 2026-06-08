@@ -65,6 +65,24 @@ services:
         condition: service_healthy
     networks:
       - api-conection
+  #node
+  need-node-service:
+    build:
+      context: ../api-hija-necesidad-Node
+    container_name: need-node-service
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_NAME: db_donaton
+      DB_USER: root
+      DB_PASSWORD: root
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - api-conection    
 
   api-gateway:
     build:
@@ -79,10 +97,13 @@ services:
         condition: service_started
       necesidades-service:
         condition: service_started
+      need-node-service:
+        condition: service_started  
     environment:
       LOGISTICA_API_URI: http://logistica-service:3001
       DONACIONES_API_URI: http://donacion-service:3002
       NECESIDADES_API_URI: http://necesidades-service:3003
+      NEED_NODE_API_URI: http://need-node-service:3000
     networks:
       - api-conection
 
