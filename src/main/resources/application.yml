@@ -7,7 +7,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: "http://localhost:5173"
+            allowedOrigins: "*"
             allowedMethods:
               - GET
               - POST
@@ -24,6 +24,7 @@ spring:
             - Path=/logistica/**
           filters:
             - StripPrefix=1
+            - DemoGatewayFilter=2
 
         - id: donacion-service
           uri: ${DONACIONES_API_URI}

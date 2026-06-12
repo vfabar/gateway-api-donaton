@@ -1,5 +1,7 @@
 services:
   database:
+    build:
+      context: "./db"
     image: mysql:8.0
     container_name: database
     environment:
@@ -83,6 +85,30 @@ services:
         condition: service_healthy
     networks:
       - api-conection    
+
+  auth-service:
+    build:
+      context: ../donaton-auth-service
+    container_name: auth-service
+    ports:
+      - "3004:3004"
+    environment:
+      DB_HOST: database
+      DB_USER: ${DB_USER:-root}
+      DB_PASSWORD: ${DB_PASS:-root}
+      DB_NAME: db_donaton
+      JWT_SECRET: test
+      CORS_ORIGIN: "*"
+      DB_PORT: 3306
+      PORT: 3004
+
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - api-conection
+
+
 
   api-gateway:
     build:
