@@ -15,7 +15,7 @@ public class DemoGatewayFilter extends AbstractGatewayFilterFactory {
         return (exchange, chain) -> {
             ServerHttpRequest req = exchange.getRequest();
             System.out.println("test filter please log");
-            System.out.println("URL please be" + req.getPath());
+            System.out.println("URL please be " + req.getPath());
             return chain.filter(exchange);
         };
     }

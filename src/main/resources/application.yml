@@ -47,6 +47,14 @@ spring:
           filters:
             - StripPrefix=1
 
+        - id: auth-service
+          uri: ${AUTH_API_URI}
+          predicates:
+            - Path=/auth-api/**
+          filters:
+            - StripPrefix=1
+
+
 management:
   endpoints:
     web:

@@ -130,6 +130,7 @@ services:
       DONACIONES_API_URI: http://donacion-service:3002
       NECESIDADES_API_URI: http://necesidades-service:3003
       NEED_NODE_API_URI: http://need-node-service:3000
+      AUTH_API_URI: http://need-auth-service:3004
     networks:
       - api-conection
 
