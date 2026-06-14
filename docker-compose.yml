@@ -134,6 +134,17 @@ services:
     networks:
       - api-conection
 
+  frontend:
+    build:
+      context: ../front-donaton/Front_donaton 
+    container_name: donaton-frontend
+    ports:
+      - "5173:80" 
+    depends_on:
+      - api-gateway 
+    networks:
+      - api-conection
+
 networks:
   api-conection:
     driver: bridge
